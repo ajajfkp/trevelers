@@ -22,23 +22,28 @@
 	<script>
 		var map;
 		function initMap() {
-			map = new google.maps.Map(document.getElementById('map'), {
-				center: {lat: -34.397, lng: 150.644},
-				zoom: 16
-			});
-			var infoWindow = new google.maps.InfoWindow({});
+			
+			
 			if (navigator.geolocation) {
+				
 				navigator.geolocation.getCurrentPosition(function(position) {
 					var pos = {
 						lat: position.coords.latitude,
 						lng: position.coords.longitude
 					};
+					console.log(pos)
+					map = new google.maps.Map(document.getElementById('map'), {
+						center: pos,
+						zoom: 16,
+						mapTypeId: 'roadmap'
+					});
+					var infoWindow = new google.maps.InfoWindow({map: map});
 					infoWindow.setPosition(pos);
 					infoWindow.setContent('Location found.');
 					map.setCenter(pos);
 				}, function() {
-						handleLocationError(true, infoWindow, map.getCenter());
-				  });
+					handleLocationError(true, infoWindow, map.getCenter());
+				},{enableHighAccuracy:true, timeout:60000, maximumAge:600000});
 			}else {
 				// Browser doesn't support Geolocation
 				handleLocationError(false, infoWindow, map.getCenter());
